@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "react-query";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import "./App.css";
 import Landing from './pages/Landing';
@@ -8,14 +8,30 @@ import Login from './pages/Login';
 import LoginCallback from './pages/LoginCallback';
 import Stats from './pages/Stats';
 import Layout from './components/Layout';
+import { AppContext } from "./context";
 
 const App = () => {
-  let alert = null;
+  const [alert, setAlert] = useState(null);
+  const appValue = useMemo(
+    () => ({ alert, setAlert }),
+    [alert]
+  )
+
   const redirect = (url) => { 
     window.location.href = url; 
-    alert = { type: 'info', message: 'Redirecting to ' + url };
+    setAlert({ type: 'info', message: 'Redirecting to ' + url });
   }
   const token = window.localStorage.getItem('_token');
+
+  const render = (content) => {
+    return (
+      <AppContext.Provider value={appValue}>
+        <Layout>
+          {content}
+        </Layout>
+      </AppContext.Provider>
+    );
+  }
 
   const { isLoading, error, data } = useQuery("data", async () => {
     if (window.location.pathname.startsWith('/auth/callback')) {
@@ -79,12 +95,12 @@ const App = () => {
         // data will be null
         break;
       case 'network':
-        alert = { type: 'warning', message: 'You may have connectivity issues. Please try again.' }
+        setAlert({ type: 'warning', message: 'You may have connectivity issues. Please try again.'});
         break;
       case '401':
         redirect('/auth/login');
       case 'redirect':
-        // alert = { type: 'info', message: 'Redirecting to login...' }
+        // setAlert({ type: 'info', message: 'Redirecting to login...' });
         break;
       case '0':
       default:
@@ -93,25 +109,20 @@ const App = () => {
   }
 
   if (isLoading) {
-    return <Layout alert={alert}><Landing /></Layout>
+    return render(<Landing />);
   }
 
   if (window.location.pathname == '/') {
-    redirect('/stats');
+    redirect('/stats/dashboard');
   }
 
-  return (
-    <div>
-      <Layout alert={alert}>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/auth/login" element={<Login redirect={redirect} />} />
-          <Route path="/auth/callback/twitch" element={<LoginCallback />} />
-          <Route path="/stats" element={<Stats data={data} />} />
-        </Routes>
-      </Layout>
-
-    </div>
+  return render(
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/auth/login" element={<Login redirect={redirect} />} />
+      <Route path="/auth/callback/twitch" element={<LoginCallback />} />
+      <Route path="/stats/:topic" element={<Stats stats={data?.data} redirect={redirect} />} />
+    </Routes>
   );
 };
 

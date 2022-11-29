@@ -17,7 +17,7 @@ function LoginCallback() {
 
         if (accessToken.length) {
             window.localStorage.setItem('_token', accessToken);
-            url = '/stats';
+            url = '/stats/dashboard';
         } else {
             throw 'Login failed';
         }

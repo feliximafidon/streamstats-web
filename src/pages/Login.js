@@ -1,12 +1,20 @@
-import '../App.css';
-import { Button, LargeTitle, makeStyles, Subtitle2 } from '@fluentui/react-components';
+import { Button, LargeTitle, Subtitle2 } from '@fluentui/react-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { brands } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
+import { useLocation } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import { AppContext } from '../context';
 
 function Login({redirect}) {
+    const {setAlert} = useContext(AppContext);
+    const alert = new URLSearchParams(useLocation().search).get('error');
     const login = () => { 
         redirect(process.env.REACT_APP_API_ROOT + '/auth/login/twitch'); 
     }
+
+    useEffect(() => {
+        setAlert({type: 'error', message: alert, });
+    }, [alert]);
 
     return (
         <div>
