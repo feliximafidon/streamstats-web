@@ -10,9 +10,12 @@ import Stats from './pages/Stats';
 import Layout from './components/Layout';
 
 const App = () => {
-  const redirect = (url) => { window.location.href = url; }
+  let alert = null;
+  const redirect = (url) => { 
+    window.location.href = url; 
+    alert = { type: 'info', message: 'Redirecting to ' + url };
+  }
   const token = window.localStorage.getItem('_token');
-  let alert = { type: 'warning', message: 'Go home' };
 
   const { isLoading, error, data } = useQuery("data", async () => {
     if (window.location.pathname.startsWith('/auth/callback')) {
@@ -81,7 +84,7 @@ const App = () => {
       case '401':
         redirect('/auth/login');
       case 'redirect':
-        alert = { type: 'info', message: 'Redirecting...' }
+        // alert = { type: 'info', message: 'Redirecting to login...' }
         break;
       case '0':
       default:
@@ -89,7 +92,7 @@ const App = () => {
     }
   }
 
-  if (isLoading || 1) {
+  if (isLoading) {
     return <Layout alert={alert}><Landing /></Layout>
   }
 
@@ -99,10 +102,10 @@ const App = () => {
 
   return (
     <div>
-      <Layout>
+      <Layout alert={alert}>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/login" element={<Login redirect={redirect} />} />
           <Route path="/auth/callback/twitch" element={<LoginCallback />} />
           <Route path="/stats" element={<Stats data={data} />} />
         </Routes>
