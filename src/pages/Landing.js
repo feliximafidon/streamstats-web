@@ -2,21 +2,7 @@ import logo from '../assets/images/logo.svg';
 import '../App.css';
 import React, { useState, useEffect } from "react";
 
-function Landing({ accessToken }) {
-
-  console.log(accessToken);
-
-  useEffect(() => {
-    fetchData(accessToken);
-
-    // return () => {
-    //   unSubscribeToOnlineStatus(id);
-    // };
-  }, [accessToken]);
-
-  const fetchData = (accessToken) => {
-    
-  }
+function Landing({ alert }) {
 
   return (                      
     <header className="App-header">

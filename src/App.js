@@ -9,10 +9,24 @@ import LoginCallback from './pages/LoginCallback';
 import Stats from './pages/Stats';
 import Layout from './components/Layout';
 
-const App = ({token}) => {
-  const { isLoading, error, data } = useQuery("stats", async () => {
+const App = () => {
+  const redirect = (url) => { window.location.href = url; }
+  const token = window.localStorage.getItem('_token');
+  let alert = { type: 'warning', message: 'Go home' };
+
+  const { isLoading, error, data } = useQuery("data", async () => {
     if (window.location.pathname.startsWith('/auth/callback')) {
-      return {};
+      // Allow to continue, without calling API
+      throw new Error(0);
+    }
+
+    if (window.location.pathname === '/auth/login') {
+      throw new Error(0);
+    }
+
+    if (! token || ! token.length) {
+      // No need to call the API
+      throw new Error(401);
     }
 
     let response = null;
@@ -30,7 +44,7 @@ const App = ({token}) => {
       stats = await response.json();
     } catch (e) {
       // Network error
-      throw new Error('Network error');
+      throw new Error('network');
     }
 
     if (! response.ok) {
@@ -43,23 +57,44 @@ const App = ({token}) => {
       }
     }
 
+    switch (response.status) {
+      case 301:
+      case 302:
+        redirect(stats.redirect);
+        throw new Error('redirect');
+    }
+
     return stats;
-  }, { retry: false });
+  }, { 
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
 
   if (error) {
     switch (error.message + '') {
+      case '417':
+        // data will be null
+        break;
+      case 'network':
+        alert = { type: 'warning', message: 'You may have connectivity issues. Please try again.' }
+        break;
       case '401':
-        if (window.location.pathname !== '/auth/login') {
-          window.location.href = '/auth/login';
-          return;
-        }
+        redirect('/auth/login');
+      case 'redirect':
+        alert = { type: 'info', message: 'Redirecting...' }
+        break;
+      case '0':
       default:
         // Continue
     }
   }
 
-  if (isLoading) {
-    return <Layout><Landing /></Layout>
+  if (isLoading || 1) {
+    return <Layout alert={alert}><Landing /></Layout>
+  }
+
+  if (window.location.pathname == '/') {
+    redirect('/stats');
   }
 
   return (

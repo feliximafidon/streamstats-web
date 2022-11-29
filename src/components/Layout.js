@@ -1,10 +1,15 @@
 import '../App.css';
+import { showAlert } from '../helpers';
 
-function Layout(props) {
+function Layout({alert, ...props}) {
+  const alertContent = alert ? showAlert(alert.message, alert.type, alert.action) : null;
   return (
-    <div className="App">
-      {props.children}
-    </div>
+    <>
+      {alertContent}
+      <div className="App">
+        {props.children}
+      </div>
+    </>
   );
 }
 
