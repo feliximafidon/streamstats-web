@@ -12,6 +12,20 @@ export const injectNumberFunctions = () => {
             return a.join('.');
         }
     }
+
+    if (typeof Object.map === 'undefined') {
+        Object.map = function(o, f, ctx) {
+
+            ctx = ctx || this;
+            var result = {};
+
+            Object.keys(o).forEach(function(k) {
+                result[k] = f.call(ctx, o[k], k, o); 
+            });
+
+            return result;
+        }
+    }
 }
 
 export const showAlert = (text, type, action, style) => {

@@ -21,8 +21,8 @@ function Tip({url}) {
   );
 }
 
-function TopHundred({ data }) {
-  const items = data.aggregates.top_hundred;
+function TopStreams({ data }) {
+  const items = data.aggregates.top_streams_following;
 
   const columns = React.useMemo(
     () => [
@@ -80,18 +80,36 @@ function TopHundred({ data }) {
   const rows = sort(getRows());
 
   return (
-      /*
-Total number of streams by their start time (rounded to the nearest hour) (table-metric, dashboard)
-How many viewers does the lowest viewer count stream that the logged in user is following need to gain in order to make it into the top 1000? (metric, dashboard)
-Median number of viewers for all streams (metric, dashboard)
-
-      */
+    /*
+      Which of the top 1000 streams is the logged in user following? (table, /stats/top-streams)
+      Which tags are shared between the user followed streams and the top 1000 streams? (table, /stats/top-streams)
+    */
     <div>
       <div className="flex flex-wrap -mx-3 mb-3">
+        <div className="px-3 mb-6 w-1/2">
+          <div className="card relative px-6 py-4 card-panel">
+              <div className="flex mb-4">
+                  <h3 className="mr-3 text-base text-80 font-bold">
+                      Top Shared Tags
+                  </h3>
+              </div>
+              <p className="flex items-center text-4xl mb-4">
+                  <Tags tag_data={data.meta.tags} tag_ids={data.aggregates.shared_tags} />
+              </p>
+              <div style={{marginTop: '32px'}}>
+                  <p className="flex items-center text-80 font-bold">
+                      <span>
+                          <span>
+                            Tags shared between top 1000 streams and user&rsquo;s following
+                          </span>
+                      </span>
+                  </p>
+              </div>
+          </div>
+        </div>
         <div className="px-3 mb-6">
-          
           <h3 className="mr-3 text-base text-80 font-bold" style={{marginBottom: '30px'}}>
-            <Title1>Top 100 Streams</Title1>
+            <Title1>Streams in the Top 1000 <a href={"https://twitch.tv/" + data.user.name} target="_blank" rel="noreferrer">{data.user.name}</a> is following</Title1>
           </h3>
           <div className="card relative px-6 py-4 card-panel" style={{ height: 'initial' }}>
             <Table sortable {...keyboardNavAttr}>
@@ -140,4 +158,4 @@ Median number of viewers for all streams (metric, dashboard)
   );
 }
 
-export default TopHundred;
+export default TopStreams;
