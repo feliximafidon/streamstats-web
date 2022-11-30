@@ -7,6 +7,8 @@ import { Link, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from 'react-query';
 import Dashboard from './stats/Dashboard';
 import TopHundred from './stats/TopHundred';
+import TopStreams from './stats/TopStreams';
+import Games from './stats/Games';
 
 function Stats({redirect, stats}) {
     const queryClient = useQueryClient();
@@ -41,9 +43,9 @@ function Stats({redirect, stats}) {
                             <FontAwesomeIcon icon={solid('trophy')} />
                             <span style={{paddingLeft: '10px'}}>Game Metrics</span>
                         </Link>
-                        <Link to={'/stats/top-1000'} onClick={pageLoadHook}>
+                        <Link to={'/stats/top-streams'} onClick={pageLoadHook}>
                             <FontAwesomeIcon icon={solid('heart-circle-bolt')} />
-                            <span style={{paddingLeft: '10px'}}>Top 1k Streams</span>
+                            <span style={{paddingLeft: '10px'}}>Top Streams</span>
                         </Link>
                         <Link to={'/stats/top-100'} onClick={pageLoadHook}>
                             <FontAwesomeIcon icon={solid('bolt')} />
@@ -63,11 +65,11 @@ function Stats({redirect, stats}) {
             case 'dashboard':
                 return <Dashboard data={stats} />;
             case 'games':
-                return 'games';
+                return <Games data={stats} />;
             case 'top-100':
                 return <TopHundred data={stats} />;
-            case 'top-1000':
-                return 'top1k';
+            case 'top-streams':
+                return <TopStreams data={stats} />;
             default:
                 redirect('/stats/dashboard');
                 return;
