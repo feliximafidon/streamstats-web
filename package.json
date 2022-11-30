@@ -28,7 +28,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",    
+    "push": "npm run build && firebase deploy",
+    "push-dev": "npm run build --mode development && firebase deploy"
   },
   "eslintConfig": {
     "extends": [
