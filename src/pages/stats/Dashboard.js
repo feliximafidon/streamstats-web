@@ -1,4 +1,4 @@
-import { Title1, PresenceBadgeStatus, useArrowNavigationGroup, Avatar } from "@fluentui/react-components";
+import { Title1, PresenceBadgeStatus, useArrowNavigationGroup, Avatar, Tooltip } from "@fluentui/react-components";
 import { createColumn, Table, TableBody, TableCell, TableCellLayout, TableHeader, TableHeaderCell, TableRow, useSort, useTable } from '@fluentui/react-components/unstable';
 import React from "react";
 
@@ -90,16 +90,16 @@ function TableDateHour ({items, headers, orderBy}) {
 
 function Dashboard({ data }) {
   let saphphire_user = 'the least followed viewer count'; //@TODO: Get the name of the user
+
   const diffTopOneThousand = (diff) => {
     if (diff === null) {
-      return '-';
+      return <Title1>'-'</Title1>;
     } else if (diff < 0) {
-      
+      return <Tooltip withArrow content="The stream with the least count the user is following is already in the top 1000" positioning={'after'} relationship="label"><Title1 style={{cursor: 'pointer', color: 'green'}}>N/A</Title1></Tooltip>;
     } else {
-      return diff;
+      return <Title1>{diff}</Title1>;
     }
-  }
-  
+  } 
 
   return (
       /*
@@ -123,7 +123,7 @@ Median number of viewers for all streams (metric, dashboard)
                           </h3>
                       </div>
                       <p className="flex items-center text-4xl mb-4">
-                          <Title1>{diffTopOneThousand(data.aggregates.lowest_following_diff_top_1000)}</Title1>
+                          {diffTopOneThousand(data.aggregates.lowest_following_diff_top_1000)}
                       </p>
                       <div>
                           <p className="flex items-center text-80 font-bold">

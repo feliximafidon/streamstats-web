@@ -6,7 +6,7 @@ import { showAlert } from '../helpers';
 
 function Layout({...props}) {
   const {alert, setAlert} = useContext(AppContext);
-  const alertContent = alert ? showAlert(
+  const alertContent = alert && alert.message?.length ? showAlert(
     alert.message, 
     alert.type, 
     {
