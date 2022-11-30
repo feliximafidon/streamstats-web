@@ -6,6 +6,7 @@ import { solid, brands } from '@fortawesome/fontawesome-svg-core/import.macro' /
 import { Link, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from 'react-query';
 import Dashboard from './stats/Dashboard';
+import TopHundred from './stats/TopHundred';
 
 function Stats({redirect, stats}) {
     const queryClient = useQueryClient();
@@ -63,10 +64,10 @@ function Stats({redirect, stats}) {
                 return <Dashboard data={stats} />;
             case 'games':
                 return 'games';
+            case 'top-100':
+                return <TopHundred data={stats} />;
             case 'top-1000':
                 return 'top1k';
-            case 'top-100':
-                return 'top1h';
             default:
                 redirect('/stats/dashboard');
                 return;

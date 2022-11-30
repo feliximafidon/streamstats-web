@@ -1,5 +1,19 @@
 import { Alert } from '@fluentui/react-components/unstable';
 
+export const injectNumberFunctions = () => {
+    if (typeof Number.prototype.format === 'undefined') {
+        Number.prototype.format = function (precision) {
+            if (!isFinite(this)) {
+                return this.toString();
+            }
+    
+            var a = this.toFixed(precision).split('.');
+            a[0] = a[0].replace(/\d(?=(\d{3})+$)/g, '$&,');
+            return a.join('.');
+        }
+    }
+}
+
 export const showAlert = (text, type, action, style) => {
     type = type.toLowerCase();
 

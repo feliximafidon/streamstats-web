@@ -7,6 +7,9 @@ import reportWebVitals from './reportWebVitals';
 
 import App from './App';
 import * as serviceWorker from "./serviceWorker";
+import { injectNumberFunctions } from './helpers';
+
+injectNumberFunctions();
 
 const queryClient = new QueryClient();
 
