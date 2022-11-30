@@ -128,6 +128,17 @@ body {
   text-align: left;
 }
 
+#stats a {
+  text-decoration: none;
+  color: #282c34;
+  font-weight: bold;
+}
+
+#stats a:hover {
+  color: #7e8ea1;
+}
+  
+
 #stats .sidebar a {
   text-decoration: none;
   font-size: 16px;

@@ -1,5 +1,3 @@
-import '../App.css';
-
 import { useContext } from 'react';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

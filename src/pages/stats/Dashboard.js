@@ -1,8 +1,95 @@
-import { Title1 } from "@fluentui/react-components";
-import { Link } from "react-router-dom";
+import { Title1, PresenceBadgeStatus, useArrowNavigationGroup, Avatar } from "@fluentui/react-components";
+import { createColumn, Table, TableBody, TableCell, TableCellLayout, TableHeader, TableHeaderCell, TableRow, useSort, useTable } from '@fluentui/react-components/unstable';
+import React from "react";
+
+function TableDateHour ({items, headers, orderBy}) {
+  const datehour = (datehour) => {
+    return new Date(datehour + ':00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric' });
+  }
+
+  const time = (time) => {
+    let ampm = 'am';
+    let varTime = parseInt(time);
+    if (! varTime) {
+      varTime = 12;
+    } else if (varTime > 12) {
+      varTime = varTime - 12;
+      ampm = 'pm';
+    } else {
+      ampm = 'am';
+    }
+
+    return varTime + ampm;
+  }
+
+  const columns = React.useMemo(
+    () => [
+        createColumn({
+        columnId: 'datehour',
+        compare: (a, b) => {
+            if (a.type === 'datetime') {
+              return (new Date(a.datehour + ':00')) > (new Date(b.datehour + ':00'));
+            } else {
+              return parseInt(a.datehour) > parseInt(b.datehour);
+            }
+        },
+        }),
+        createColumn({
+        columnId: 'count',
+        compare: (a, b) => {
+            return a.count > b.count;
+        },
+        }),
+    ],
+    [],
+  );
+
+  const {
+    getRows,
+    sort: { getSortDirection, toggleColumnSort, sort },
+  } = useTable(
+    {
+      columns,
+      items,
+    },
+    [useSort({ defaultSortState: orderBy })],
+  );
+
+  const keyboardNavAttr = useArrowNavigationGroup({ axis: 'grid' });
+
+  const headerSortProps = (columnId) => ({
+    onClick: (e) => {
+      toggleColumnSort(e, columnId);
+    },
+    sortDirection: getSortDirection(columnId),
+  });
+
+  const rows = sort(getRows());
+
+  return (
+    <Table sortable {...keyboardNavAttr}>
+      <TableHeader>
+        <TableRow>
+          <TableHeaderCell {...headerSortProps('datehour')}><strong>{headers.datehour}</strong></TableHeaderCell>
+          <TableHeaderCell {...headerSortProps('count')}><strong>{headers.count}</strong></TableHeaderCell>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.map(({ item }) => (
+          <TableRow key={item.datehour + item.count}>
+            <TableCell>{item.type === 'datetime' ? datehour(item.datehour) : time(item.datehour)}</TableCell>
+            <TableCell>
+              <TableCellLayout>{item.count}</TableCellLayout>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
 
 function Dashboard({ data }) {
-    let saphphire_user = 'lazy123';
+    let saphphire_user = 'the least followed viewer count'; //@TODO: Get the name of the user
 
     return (
         /*
@@ -21,7 +108,7 @@ Median number of viewers for all streams (metric, dashboard)
                             </h3>
                         </div>
                         <p class="flex items-center text-4xl mb-4">
-                            <Title1>{data.aggregates.lowest_following_diff_top_1000 ? data.aggregates.lowest_following_diff_top_1000 : 0}</Title1>
+                            <Title1>{data.aggregates.lowest_following_diff_top_1000 !== null ? data.aggregates.lowest_following_diff_top_1000 : '-'}</Title1>
                         </p>
                         <div>
                             <p class="flex items-center text-80 font-bold">
@@ -36,60 +123,55 @@ Median number of viewers for all streams (metric, dashboard)
                 </div>
                 <div class="px-3 mb-6 w-1/2">
                     <div class="card relative px-6 py-4 card-panel">
-                        <h3 class="flex mb-3 text-base text-80 font-bold">
-                            User Status
-
-                            <span class="ml-auto font-semibold text-70 text-sm">
-                                (5,736 total)
-                            </span>
-                        </h3>
-                        <div class="min-h-90px">
-                            <div class="overflow-hidden overflow-y-auto max-h-90px">
-                            </div>
-                            <div class="vertical-center rounded-b-lg ct-chart mr-4">
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="px-3 mb-6 w-1/2">
-                    <div class="card relative px-6 py-4 card-panel">
                         <div class="flex mb-4">
-                            <h3 class="mr-3 text-base text-80 font-bold">Transaction Count</h3>
+                            <h3 class="mr-3 text-base text-80 font-bold">
+                                Median Viewers
+                            </h3>
                         </div>
                         <p class="flex items-center text-4xl mb-4">
-                            0
+                            <Title1>{data.aggregates.median_viewer_count ? data.aggregates.median_viewer_count : 0}</Title1>
                         </p>
                         <div>
                             <p class="flex items-center text-80 font-bold">
                                 <span>
                                     <span>
-                                        No Data
+                                      Median number of viewers for all streams
                                     </span>
                                 </span>
                             </p>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div>
+              <div class="flex flex-wrap -mx-3 mb-3">
                 <div class="px-3 mb-6 w-1/2">
-                    <div class="card relative px-6 py-4 card-panel">
-                        <div class="flex mb-4">
-                            <h3 class="mr-3 text-base text-80 font-bold">Transaction Total Value</h3>
-                        </div>
-                        <p class="flex items-center text-4xl mb-4">
-                            0
-                        </p>
-                        <div>
-                            <p class="flex items-center text-80 font-bold">
-                                <span>
-                                    <span>
-                                        No Data
-                                    </span>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
+                  
+                  <h3 class="mr-3 text-base text-80 font-bold">
+                    Total Number of Streams by Start Time (includes days)
+                  </h3>
+                  <div class="card relative px-6 py-4 card-panel" style={{ height: 'initial' }}>
+                    <TableDateHour 
+                      items={data.aggregates.streams_by_time} 
+                      headers={{datehour: 'Hour of Day', count: 'Number of Streams (of ' + data.meta.stream_count + ')'}} 
+                      orderBy={{ sortColumn: 'datehour', sortDirection: 'descending' }}
+                    />
+                  </div>
                 </div>
+                <div class="px-3 mb-6 w-1/2">
+                  
+                  <h3 class="mr-3 text-base text-80 font-bold">
+                    Total Number of Streams by Start Time (time only)
+                  </h3>
+                  <div class="card relative px-6 py-4 card-panel" style={{ height: 'initial' }}>
+                    <TableDateHour 
+                      items={data.aggregates.streams_by_time_only} 
+                      headers={{datehour: 'Hour of Day', count: 'Number of Streams (of ' + data.meta.stream_count + ')'}} 
+                      orderBy={{ sortColumn: 'datehour', sortDirection: 'ascending' }}
+                    />  
+                  </div>
+                </div>
+              </div>
             </div>
         </div>
     );
