@@ -101,7 +101,7 @@ Median number of viewers for all streams (metric, dashboard)
                   <TableHeaderCell {...headerSortProps('game_name')}><strong>Game Name</strong></TableHeaderCell>
                   <TableHeaderCell {...headerSortProps('user_name')}><strong>User</strong></TableHeaderCell>
                   <TableHeaderCell {...headerSortProps('viewer_count')}><strong>Viewer Count</strong></TableHeaderCell>
-                  <TableHeaderCell><strong></strong></TableHeaderCell>
+                  <TableHeaderCell><strong>Tags</strong></TableHeaderCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
