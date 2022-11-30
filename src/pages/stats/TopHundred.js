@@ -6,7 +6,7 @@ function Tags({tag_ids, tag_data}) {
   return tag_ids?.length ? (
     <div>
       {tag_ids.map((item) => { 
-        return <Badge appearance="tint" style={{marginRight: '6px'}}>{tag_data[item].name}</Badge>;
+        return <Badge key={item} appearance="tint" style={{marginRight: '6px'}}>{tag_data[item].name}</Badge>;
       })}
     </div>
   ) : '';
@@ -87,13 +87,13 @@ Median number of viewers for all streams (metric, dashboard)
 
       */
     <div>
-      <div class="flex flex-wrap -mx-3 mb-3">
-        <div class="px-3 mb-6">
+      <div className="flex flex-wrap -mx-3 mb-3">
+        <div className="px-3 mb-6">
           
-          <h3 class="mr-3 text-base text-80 font-bold" style={{marginBottom: '30px'}}>
-            <Title1>Total Number of Streams by Start Time (includes days)</Title1>
+          <h3 className="mr-3 text-base text-80 font-bold" style={{marginBottom: '30px'}}>
+            <Title1>Top 100 Streams</Title1>
           </h3>
-          <div class="card relative px-6 py-4 card-panel" style={{ height: 'initial' }}>
+          <div className="card relative px-6 py-4 card-panel" style={{ height: 'initial' }}>
             <Table sortable {...keyboardNavAttr}>
               <TableHeader>
                 <TableRow>
